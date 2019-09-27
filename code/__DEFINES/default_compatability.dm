@@ -10,17 +10,30 @@
 #define COMPONENT_COMPAT_DELETED(thing) (!thing)
 #endif
 
+#ifndef COMPONENT_COMPAT_CREATE_GLOBAL_LIST
+#define COMPONENT_COMPAT_CREATE_GLOBAL_LIST(name) var/list/##name = list()
+#endif
+
+#ifndef COMPONENT_COMPAT_ACCESS_GLOBAL_LIST
+#define COMPONENT_COMPAT_ACCESS_GLOBAL_LIST(name) name
+#endif
+
 #ifndef COMPONENT_COMPAT_STACK_TRACE
 #define COMPONENT_COMPAT_STACK_TRACE(msg) __component_compat_stack_trace(msg)
 /proc/__component_compat_stack_trace(msg)
 	CRASH(msg)
 #endif
 
-/proc/CallAsync(thing, proctype, arguments)
+#ifndef COMPONENT_COMPAT_CALL_ASYNC
+#define COMPONENT_COMPAT_CALL_ASYNC(thing, proctype, arguments) __component_compat_call_async(thing, proctype, arguments)
+/proc/__component_compat_call_async(thing, proctype, arguments)
     set waitfor = FALSE
     call(thing, proctype)(arglist(arguments))
+#endif
 
-/proc/type2parent(child)
+#ifndef COMPONENT_COMPAT_TYPE_TO_PARENT
+#define COMPONENT_COMPAT_TYPE_TO_PARENT(child) __component_compat_type_to_parent(child)
+/proc/__component_compat_type_to_parent(child)
 	var/string_type = "[child]"
 	var/last_slash = findlasttext(string_type, "/")
 	if(last_slash == 1)
@@ -34,3 +47,4 @@
 			else
 				return /datum
 	return text2path(copytext(string_type, 1, last_slash))
+#endif

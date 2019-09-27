@@ -1,12 +1,16 @@
 /datum
-	var/list/datum_components //for /datum/components
-	var/list/comp_lookup //it used to be for looking up components which had registered a signal but now anything can register
+	/// Components attached to this datum
+	/// Lazy associated list in the structure of `type:component/list of components`
+	var/list/datum_components
+	/// Any datum registered to receive signals from this datum is in this list
+	/// Lazy associated list in the structure of `signal:registree/list of registrees`
+	var/list/comp_lookup
+	/// Lazy associated list in the structure of `signals:proctype` that are run when the datum receives that signal
 	var/list/list/signal_procs
+	/// Is this datum capable of sending signals?
+	/// Set to true when a signal has been registered
 	var/signal_enabled = FALSE
 
-// Default implementation of clean-up code.
-// This should be overridden to remove all references pointing to the object being destroyed.
-// Return the appropriate QDEL_HINT; in most cases this is QDEL_HINT_QUEUE.
 /datum/COMPONENT_COMPAT_DATUM_CLEANUP
 	signal_enabled = FALSE
 
@@ -14,16 +18,12 @@
 	if(dc)
 		var/all_components = dc[/datum/component]
 		if(length(all_components))
-			for(var/I in all_components)
-				var/datum/component/C = I
-				C._RemoveFromParent()
-				C.parent = null
-				COMPONENT_COMPAT_DELETE(C)
+			for(var/i in all_components)
+				var/datum/component/comp = i
+				comp.__cleanup(FALSE, TRUE)
 		else
-			var/datum/component/C = all_components
-			C._RemoveFromParent()
-			C.parent = null
-			COMPONENT_COMPAT_DELETE(C)
+			var/datum/component/comp = all_components
+			comp.__cleanup(FALSE, TRUE)
 		dc.Cut()
 
 	var/list/lookup = comp_lookup

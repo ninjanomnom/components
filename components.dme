@@ -17,4 +17,5 @@
 #include "code\__DEFINES\default_compatability.dm"
 #include "code\datums\datum.dm"
 #include "code\datums\components\_component.dm"
+#include "code\datums\elements\_element.dm"
 // END_INCLUDE
