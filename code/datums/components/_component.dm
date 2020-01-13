@@ -236,6 +236,17 @@
 /datum/component/proc/InheritComponent(datum/component/C, i_am_original)
 	return
 
+
+/**
+  * Called on a component when a component of the same type was added to the same parent with COMPONENT_DUPE_SELECTIVE
+  * See `/datum/component/var/dupe_mode`
+  * `C`'s type will always be the same of the called component
+  * return TRUE if you are absorbing the component, otherwise FALSE if you are fine having it exist as a duplicate component
+  */
+/datum/component/proc/CheckDupeComponent(datum/component/C, ...)
+	return
+
+
 /**
   * Callback Just before this component is transferred
   *
@@ -297,8 +308,7 @@
   * * datum/component/c_type The typepath of the component you want to get a reference to
   */
 /datum/proc/GetComponent(datum/component/c_type)
-	//RETURN_TYPE(c_type)
-	if(initial(c_type.dupe_mode) == COMPONENT_DUPE_ALLOWED)
+	if(initial(c_type.dupe_mode) == COMPONENT_DUPE_ALLOWED || initial(c_type.dupe_mode) == COMPONENT_DUPE_SELECTIVE)
 		COMPONENT_COMPAT_STACK_TRACE("GetComponent was called to get a component of which multiple copies could be on an object. This can easily break and should be changed. Type: \[[c_type]\]")
 	var/list/dc = datum_components
 	if(!dc)
@@ -316,8 +326,7 @@
   * * datum/component/c_type The typepath of the component you want to get a reference to
   */
 /datum/proc/GetExactComponent(datum/component/c_type)
-	//RETURN_TYPE(c_type)
-	if(initial(c_type.dupe_mode) == COMPONENT_DUPE_ALLOWED)
+	if(initial(c_type.dupe_mode) == COMPONENT_DUPE_ALLOWED || initial(c_type.dupe_mode) == COMPONENT_DUPE_SELECTIVE)
 		COMPONENT_COMPAT_STACK_TRACE("GetComponent was called to get a component of which multiple copies could be on an object. This can easily break and should be changed. Type: \[[c_type]\]")
 	var/list/dc = datum_components
 	if(!dc)
@@ -395,6 +404,19 @@
 						old_comp.InheritComponent(null, TRUE, arguments)
 					else
 						old_comp.InheritComponent(new_comp, TRUE)
+				if(COMPONENT_DUPE_SELECTIVE)
+					var/list/arguments = args.Copy()
+					arguments[1] = new_comp
+					var/make_new_component = TRUE
+					for(var/i in GetComponents(new_type))
+						var/datum/component/C = i
+						if(C.CheckDupeComponent(arglist(arguments)))
+							make_new_component = FALSE
+							COMPONENT_COMPAT_DELETE(new_comp)
+							new_comp = null
+							break
+					if(!new_comp && make_new_component)
+						new_comp = new nt(arglist(args))
 		else if(!new_comp)
 			new_comp = new nt(arglist(args)) // There's a valid dupe mode but there's no old component, act like normal
 	else if(!new_comp)
