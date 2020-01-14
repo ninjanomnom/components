@@ -1,4 +1,4 @@
-COMPONENT_COMPAT_CREATE_GLOBAL_LIST(__dcs_elements)
+COMPONENT_COMPAT_CREATE_GLOBAL(__dcs_elements, /list) = list()
 
 /**
   * A holder for simple behaviour that can be attached to many different types
@@ -18,7 +18,7 @@ COMPONENT_COMPAT_CREATE_GLOBAL_LIST(__dcs_elements)
 
 /// Activates the functionality defined by the element on the given target datum
 /datum/element/proc/Attach(datum/target)
-	//SHOULD_CALL_PARENT(TRUE)
+	SHOULD_CALL_PARENT(TRUE)
 	if(type == /datum/element)
 		return ELEMENT_INCOMPATIBLE
 	if(element_flags & ELEMENT_DETACH)
@@ -26,10 +26,11 @@ COMPONENT_COMPAT_CREATE_GLOBAL_LIST(__dcs_elements)
 
 /// Deactivates the functionality defines by the element on the given datum
 /datum/element/proc/Detach(datum/source, force)
+	SHOULD_CALL_PARENT(TRUE)
 	UnregisterSignal(source, COMSIG_PARENT_QDELETING)
 
 /datum/element/COMPONENT_COMPAT_DATUM_CLEANUP
-	var/list/elements_by_type = COMPONENT_COMPAT_ACCESS_GLOBAL_LIST(__dcs_elements)
+	var/list/elements_by_type = COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs_elements)
 	elements_by_type -= type
 	return ..()
 
@@ -37,7 +38,7 @@ COMPONENT_COMPAT_CREATE_GLOBAL_LIST(__dcs_elements)
 
 /// Finds or instances the element specified
 /proc/__GetElement(datum/element/eletype, ...)
-	var/list/elements_by_type = COMPONENT_COMPAT_ACCESS_GLOBAL_LIST(__dcs_elements)
+	var/list/elements_by_type = COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs_elements)
 	var/element_id = eletype
 	
 	if(initial(eletype.element_flags) & ELEMENT_BESPOKE)

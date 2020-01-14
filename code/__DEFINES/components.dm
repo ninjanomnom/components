@@ -2,6 +2,12 @@
 #define SEND_SIGNAL(target, sigtype, arguments...) ( !target.comp_lookup || !target.comp_lookup[sigtype] ? NONE : target._SendSignal(sigtype, list(target, ##arguments)) )
 #endif
 
+#ifndef SEND_GLOBAL_SIGNAL
+// You need the extra wrapping around COMPONENT_COMPAT_ACCESS_GLOBAL because of some oddity with how byond interprets defines
+// Probably a byond bug that needs to be isolated
+#define SEND_GLOBAL_SIGNAL(sigtype, arguments...) SEND_SIGNAL((COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs)), sigtype, ##arguments)
+#endif
+
 /// Return this from `/datum/component/Initialize` or `datum/component/OnTransfer` to have the component be deleted if it's applied to an incorrect type.
 /// `parent` must not be modified if this is to be returned.
 /// This will be noted in the runtime logs

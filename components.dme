@@ -15,6 +15,7 @@
 // BEGIN_INCLUDE
 #include "code\__DEFINES\components.dm"
 #include "code\__DEFINES\default_compatability.dm"
+#include "code\__DEFINES\dreamchecker.dm"
 #include "code\__HELPERS\components.dm"
 #include "code\datums\datum.dm"
 #include "code\datums\components\_component.dm"

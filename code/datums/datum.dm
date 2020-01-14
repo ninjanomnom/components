@@ -42,4 +42,5 @@
 	for(var/target in signal_procs)
 		UnregisterSignal(target, signal_procs[target])
 
-	return ..()
+	// We may or may not have other sibling overrides to call, the linter is going to be wrong about one of them
+	return UNLINT(..())
