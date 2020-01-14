@@ -8,6 +8,14 @@
 #define SEND_GLOBAL_SIGNAL(sigtype, arguments...) SEND_SIGNAL((COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs)), sigtype, ##arguments)
 #endif
 
+#ifndef RegisterGlobalSignal
+#define RegisterGlobalSignal(arguments...) RegisterSignal(COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs), ##arguments)
+#endif
+
+#ifndef UnregisterGlobalSignal
+#define UnregisterGlobalSignal(arguments...) UnregisterSignal(COMPONENT_COMPAT_ACCESS_GLOBAL(__dcs), ##arguments)
+#endif
+
 /// Return this from `/datum/component/Initialize` or `datum/component/OnTransfer` to have the component be deleted if it's applied to an incorrect type.
 /// `parent` must not be modified if this is to be returned.
 /// This will be noted in the runtime logs
