@@ -1,4 +1,4 @@
-COMPONENT_COMPAT_CREATE_GLOBAL(__dcs_elements, /list) = list()
+COMPONENT_COMPAT_CREATE_GLOBAL(__dcs_elements, /list, list())
 
 /**
   * A holder for simple behaviour that can be attached to many different types

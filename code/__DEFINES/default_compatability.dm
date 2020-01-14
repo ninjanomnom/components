@@ -11,7 +11,7 @@
 #endif
 
 #ifndef COMPONENT_COMPAT_CREATE_GLOBAL
-#define COMPONENT_COMPAT_CREATE_GLOBAL(name, type) var##type/##name
+#define COMPONENT_COMPAT_CREATE_GLOBAL(name, type, value) var##type/##name = value
 #endif
 
 #ifndef COMPONENT_COMPAT_ACCESS_GLOBAL
