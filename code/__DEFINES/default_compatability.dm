@@ -28,7 +28,7 @@
 #define COMPONENT_COMPAT_CALL_ASYNC(thing, proctype, arguments) __component_compat_call_async(thing, proctype, arguments)
 /proc/__component_compat_call_async(thing, proctype, arguments)
     set waitfor = FALSE
-    call(thing, proctype)(arglist(arguments))
+    return call(thing, proctype)(arglist(arguments))
 #endif
 
 #ifndef COMPONENT_COMPAT_TYPE_TO_PARENT
